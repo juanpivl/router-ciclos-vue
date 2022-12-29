@@ -1,9 +1,13 @@
 <template>
   <h1>Pokemon page</h1>
-  <h1>Pokemon : {{id}}</h1>
+  <h1>Pokemon :  <span>#{{id}}  </span></h1>
+  <div v-if="pokemon">
+   <img :src="pokemon.sprites.front_default" :alt="pokemon.name">
+  </div>
 </template>
 
 <script>
+import { watch } from '@vue/runtime-core';
 
 export default {
   props:{
@@ -28,12 +32,22 @@ export default {
   },
   methods:{
     async getPokemon(){
-      const pokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${this.id}`).then(r => r.json());
-      console.log(pokemon)
-      this.pokemon = pokemon
+      try{
+        const pokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${this.id}`).then(r => r.json());
+        console.log(pokemon)
+        this.pokemon = pokemon
+        
+      }catch(error){
+        this.$router.push('/')
+        console.log('No hay nada que hacer aqui')
+      }
+    }
+  },
+  watch:{
+    id(){
+      this.getPokemon()
     }
   }
-  
 }
 </script>
 
